@@ -24,7 +24,7 @@ describe("Token", () => {
     assert.ok(token.options.address);
   });
 
-  it("has a default supply", async () => {
+  it("has initial supply", async () => {
     const supply = await token.methods.balanceOf(accounts[0]).call();
     assert.equal(supply, INITIAL_SUPPLY);
   });
@@ -40,5 +40,13 @@ describe("Token", () => {
 
     assert.equal(fromBalance, INITIAL_SUPPLY - TOKENS);
     assert.equal(toBalance, TOKENS);
+  });
+
+  it("requires sufficient balance", async () => {
+    try {
+      await token.methods.transfer(accounts[0], 10).send({ from: accounts[1] });
+    } catch (error) {
+      assert(error);
+    }
   });
 });
